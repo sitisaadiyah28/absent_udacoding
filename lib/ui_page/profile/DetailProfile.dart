@@ -3,6 +3,7 @@ import 'package:absent_udacoding/model/ModelAbsent.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -20,6 +21,9 @@ class _DetailProfileState extends State<DetailProfile> {
   Completer<GoogleMapController> _controller = Completer();
   final Map<String, Marker> _marker = {};
   double a, b;
+  var locAddress;
+  String address1 = "";
+  String address2 = "";
 
 
   Future changeCameraPosition(CameraPosition camLocation) async {
@@ -44,8 +48,20 @@ class _DetailProfileState extends State<DetailProfile> {
           zoom: 15);
       changeCameraPosition(camLocation);
     });
+
     print("Lat : ${currentLocation.latitude}");
     print("Lon : ${currentLocation.longitude}");
+
+    final coordinate = new Coordinates(
+        currentLocation.latitude, currentLocation.longitude);
+    locAddress = await Geocoder.local.findAddressesFromCoordinates(coordinate);
+   /* var first = locAddress.first;*/
+
+    setState(() {
+      address1 = locAddress.first.featureName;
+      address2 = locAddress.first.addressLine;
+    });
+    /*print("${first.featureName} : ${first.addressLine}");*/
 
   }
 
@@ -187,7 +203,7 @@ class _DetailProfileState extends State<DetailProfile> {
                                 padding: const EdgeInsets.only(top: 10),
                               ),
                               Text(
-                                widget.data?.place ?? "",
+                                address2,
                                 style: TextStyle(
                                     fontSize: 14, fontFamily: 'Open Sans'),
                               ),
