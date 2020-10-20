@@ -1,3 +1,4 @@
+import 'package:absent_udacoding/DashboardAbsen.dart';
 import 'package:absent_udacoding/DashboardPage.dart';
 import 'package:absent_udacoding/constant/ConstantFile.dart';
 import 'package:absent_udacoding/model/ModelAbsent.dart';
@@ -16,6 +17,19 @@ class CheckOut extends StatefulWidget {
 
 class _CheckOutState extends State<CheckOut> {
   BaseEndPoint network = NetworkProvider();
+  String myId;
+  SessionManager sessionManager = SessionManager();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    sessionManager.getPreference().then((value) {
+      setState(() {
+        myId = sessionManager.globIduser;
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -175,13 +189,10 @@ class ListCheckOut extends StatelessWidget {
 
                               await network.checkOut(
                                   idAbsent, idCheckOutBy, idUser, jamKerja);
+                             /* network.getAbsent("");*/
 
                               /*Navigator.pop(context);*/
-
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => DashboardPage()));
+                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => DashboardPage()),(route) => false);
                             },
                           ),
                         ),
